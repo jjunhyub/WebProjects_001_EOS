@@ -1,12 +1,6 @@
-import Vue from 'vue';
 import ScatterJS from 'scatterjs-core';
 import ScatterEOS from 'scatterjs-plugin-eosjs';
 import Eos from 'eosjs';
-import App from './App.vue';
-import router from './router';
-import VueResource from 'vue-resource'
-
-Vue.use(VueResource);
 
 // Don't forget to tell ScatterJS which plugins you are using.
 ScatterJS.plugins(new ScatterEOS());
@@ -21,15 +15,15 @@ const network = {
   chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906'
 }
 
-//const connectionOptions = {initTimeout: 10000} =>optional!!
 // First we need to connect to the user's Scatter.
-ScatterJS.scatter.connect('eos-poker' /*'My-App' 둘다 된다 왜그럴까?*/ ).then(connected => {
+ScatterJS.scatter.connect('My-App').then(connected => {
 
   // If the user does not have Scatter or it is Locked or Closed this will return false;
   if (!connected) {
     console.log('disconnected');
     return false;
   }
+
   const scatter = ScatterJS.scatter;
 
   // Now we need to get an identity from the user.
@@ -41,7 +35,7 @@ ScatterJS.scatter.connect('eos-poker' /*'My-App' 둘다 된다 왜그럴까?*/ )
 
     // Always use the accounts you got back from Scatter. Never hardcode them even if you are prompting
     // the user for their account name beforehand. They could still give you a different account.
-    const account = scatter.identity.accounts.find( /*account가 들어갈 자리다.*/ x => x.blockchain === 'eos');
+    const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
 
     // You can pass in any additional options you want into the eosjs reference.
     const eosOptions = {
@@ -57,13 +51,13 @@ ScatterJS.scatter.connect('eos-poker' /*'My-App' 둘다 된다 왜그럴까?*/ )
     // to an eosjs object we can send a transaction.
     // ----------------------------
 
-    console.log('hahahahha');
-    console.log(account.name);
+
     // Never assume the account's permission/authority. Always take it from the returned account.
     const transactionOptions = {
       authorization: [`${account.name}@${account.authority}`]
     };
-    eos.transfer(account.name, 'helloworld', '0.1000 EOS', 'memo', transactionOptions).then(trx => {
+
+    eos.transfer(account.name, 'helloworld', '1.0000 EOS', 'memo', transactionOptions).then(trx => {
       // That's it!
       console.log(`Transaction ID: ${trx.transaction_id}`);
     }).catch(error => {
@@ -75,13 +69,3 @@ ScatterJS.scatter.connect('eos-poker' /*'My-App' 둘다 된다 왜그럴까?*/ )
     console.error(error);
   });
 });
-
-Vue.config.productionTip = false;
-
-
-
-
-new Vue({
-  router,
-  render: h => h(App),
-}).$mount('#app');

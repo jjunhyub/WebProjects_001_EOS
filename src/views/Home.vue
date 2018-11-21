@@ -14,6 +14,9 @@
       </div>
     </div>
   </div>
+  <div>
+    <button type="button" v-on:click="getCard">Get Card</button>
+  </div>
   <div class="log-bar" style="margin-top : 50px">
     <div class="logs">
       <table class="table table-hover">
@@ -148,6 +151,10 @@
 
 <script>
 import API from '@/lib/API';
+import ScatterJS from 'scatterjs-core';
+import ScatterEOS from 'scatterjs-plugin-eosjs'
+
+ScatterJS.plugins( new ScatterEOS() );
 
 export default {
   name: 'home',
@@ -160,7 +167,18 @@ export default {
   mounted() {},
 
   methods: {
-
+    getCard : function(){
+      console.log('clicked');
+      this.$http.post('/api/getCard',{
+        'key': Math.floor((Math.random() * 2598960) + 1)
+      })
+      .then(response=>{
+        console.log('getResponse');
+        console.log(response);
+      }).catch(error => {
+        console.error(error);
+      });
+    }
   },
 };
 </script>
