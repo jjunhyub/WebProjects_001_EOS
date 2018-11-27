@@ -1,162 +1,29 @@
 <template>
+  <!--이곳은 실제로 페이지가 다른 view들을 저장한다. vue라고 다 똑같은 컴포넌트인것이 아니다.-->
 <div class="home">
-  <div class="eos-bar" style="padding : 50px;">
-    <span style="margin-right : 20px">400.4672</span>
-    <img class="money-pot-image" src="../assets/eoslogo.png" width=45px height=78px />
-  </div>
-  <div class="card-bar">
-    <div class="card">
-      <div class="card-img" style="padding : 20px; padding-bottom : 0px; padding-top : 50px">
-        <img src="../assets/trumpcards.png" style="width : 300px; height : 200px;" />
-      </div>
-      <div style="padding : 30px;">
-        <button type="button" class="btn btn-danger" style="width : 200px; height : 50px;">Login</button>
-      </div>
-    </div>
-  </div>
-  <div>
-    <button type="button" v-on:click="getCard">Get Card</button>
-  </div>
-  <div class="log-bar" style="margin-top : 50px">
-    <div class="logs">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">GameID</th>
-            <th scope="col">WINNER</th>
-            <th scope="col">WINNER MADE</th>
-            <th scope="col">MY MADE</th>
-            <th scope="col">PRIZE</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="table-active">
-            <th scope="row">Active</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr>
-            <th scope="row">Default</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr class="table-active">
-            <th scope="row">Active</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr>
-            <th scope="row">Default</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr class="table-active">
-            <th scope="row">Active</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr>
-            <th scope="row">Default</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr class="table-active">
-            <th scope="row">Active</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr>
-            <th scope="row">Default</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr class="table-active">
-            <th scope="row">Active</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr>
-            <th scope="row">Default</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr class="table-active">
-            <th scope="row">Active</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr>
-            <th scope="row">Default</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr class="table-active">
-            <th scope="row">Active</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr>
-            <th scope="row">Default</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr class="table-active">
-            <th scope="row">Active</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-          <tr>
-            <th scope="row">Default</th>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <eos-bar></eos-bar>
+  <card-bar></card-bar>
+  <log-bar></log-bar>
 </div>
 </template>
 
 <script>
 import API from '@/lib/API';
 import ScatterJS from 'scatterjs-core';
-import ScatterEOS from 'scatterjs-plugin-eosjs'
+import ScatterEOS from 'scatterjs-plugin-eosjs';
+import getContract from '../main.js';
+import EosBar from '../components/eosBar.vue';
+import CardBar from '../components/cardBar.vue';
+import LogBar from '../components/logBar.vue';
 
-ScatterJS.plugins( new ScatterEOS() );
+ScatterJS.plugins(new ScatterEOS());
 
 export default {
+  components: {
+    'eos-bar': EosBar,
+    'card-bar': CardBar,
+    'log-bar': LogBar,
+  },
   name: 'home',
   data() {
     return {
@@ -165,34 +32,9 @@ export default {
     };
   },
   mounted() {},
-
-  methods: {
-    getCard : function(){
-      console.log('clicked');
-      this.$http.post('/api/getCard',{
-        'key': Math.floor((Math.random() * 2598960) + 1)
-      })
-      .then(response=>{
-        console.log('getResponse');
-        console.log(response);
-      }).catch(error => {
-        console.error(error);
-      });
-    }
-  },
 };
 </script>
 
 <style>
-.eos-bar {
-  text-align: center;
-  font-size: 5em;
-  color: white;
-}
 
-.card-bar {
-  text-align: center;
-  color: black;
-  background-color: black;
-}
 </style>
