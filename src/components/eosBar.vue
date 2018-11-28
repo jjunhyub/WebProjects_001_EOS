@@ -17,8 +17,6 @@
         this.$http.get('/api/getLatestGame').then(response=> {
           console.log(response.data.created_at);
           console.log(response.data.prize);
-        }).catch(error=>{
-          console.error(error);
         });
 
     },
