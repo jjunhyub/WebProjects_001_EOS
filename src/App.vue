@@ -23,6 +23,9 @@ export default{
 </script>
 
 
-<style>
 
+<style>
+body{
+  font-family: 'Nunito SemiBold';
+}
 </style>

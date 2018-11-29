@@ -36,8 +36,12 @@ export default {
   },
   methods: {
     popUp: function(myPopup) {
-      console.log(myPopup);
       var popup = document.getElementById(myPopup);
+      var popdown = document.getElementsByClassName("popuptext");
+      for(var i=0;i<3;i++)
+      {
+        popdown[i].classList.toggle("hide");
+      }
       popup.classList.toggle("show");
     },
   },
@@ -87,8 +91,13 @@ export default {
 /* Toggle this class - hide and show the popup */
 .nav-link .show {
   visibility: visible;
-  -webkit-animation: fadeIn 1s;
-  animation: fadeIn 1s;
+  -webkit-animation: fadeIn 0.2s;
+  animation: fadeIn 0.2s;
+}
+.hide {
+  visibility: hidden;
+  -webkit-animation: fadeOut 1s;
+  animation: fadeOut 1s;
 }
 /* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {
@@ -107,6 +116,24 @@ export default {
 
   to {
     opacity: 1;
+  }
+}
+@-webkit-keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
   }
 }
 </style>

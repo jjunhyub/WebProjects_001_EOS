@@ -129,3 +129,40 @@
     </div>
   </div>
 </template>
+
+<script>
+/*
+export default {
+  data() {
+    return {
+      log: {
+
+      },
+      logs:[],
+    };
+  },
+  methods: {
+    //자주 쓸것 같아서 함수로 뺌
+    timeChecker: function() {
+      this.$http.get('/api/getLog').then(response => {
+        this.log = response.data;
+      }).catch(error => {
+        console.error(error);
+      });
+    },
+  },
+  created() {
+    this.$http.get('/api/getLog').then(response => {
+      for(var i =0;i<sizeof(response.data);i++)
+      {
+        //여기서 log를 초기화해주지 않아도 되나?
+        this.log=response.data[i];
+        logs.push(log);
+      }
+    }).catch(error => {
+      console.error(error);
+    });
+  },
+}
+*/
+</script>

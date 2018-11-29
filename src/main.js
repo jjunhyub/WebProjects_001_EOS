@@ -7,11 +7,9 @@ import VueResource from 'vue-resource';
 import App from './App.vue';
 import router from './router';
 
-console.log('0');
 Vue.use(VueResource);
-console.log('1');
 // Don't forget to tell ScatterJS which plugins you are using.
-
+/*
 ScatterJS.plugins(new ScatterEOS());
 console.log('2');
 
@@ -28,6 +26,29 @@ const network = {
 };
 console.log('3');
 
+function buttonGoGo() {
+  console.log('ButtonGoGo is going!');
+};
+
+function goTransaction() {
+  eos.transaction({
+    actions: [{
+      account: "jmvzpmtc3tum",
+      name: "gameset",
+      data: {},
+      authorization: [{
+        actor: account.name,
+        permission: "active"
+      }]
+    }]
+  }).then((trx) => {
+    console.log(`transaction : ${trx.transaction_id}`);
+  }).catch(error => {
+    console.log('this is an error :');
+    console.log(error);
+  });
+  console.log('12');
+};
 // const connectionOptions = {initTimeout: 10000} =>optional!!
 // First we need to connect to the user's Scatter.
 ScatterJS.scatter.connect('eos-poker').then((connected) => {
@@ -58,6 +79,7 @@ ScatterJS.scatter.connect('eos-poker').then((connected) => {
     console.log('8');
     // Always use the accounts you got back from Scatter.
     // Never hardcode them even if you are prompting
+
     // the user for their account name beforehand. They could still give you a different account.
     const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
     console.log('9');
@@ -73,65 +95,48 @@ ScatterJS.scatter.connect('eos-poker').then((connected) => {
     const eos = scatter.eos(network, Eos, eosOptions);
     console.log('11');
 
-    // ----------------------------
-    // Now that we have an identity(유저의 정보),
-    // an EOSIO account, and a reference
-    // to an eosjs object we can send a transaction.
-    // ----------------------------
+// ----------------------------9
+// Now that we have an identity(유저의 정보),
+// an EOSIO account, and a reference
+// to an eosjs object we can send a transaction.
+// ----------------------------
 
-    // Never assume the account's permission/authority. Always take it from the returned account.
+
+
+    Never assume the account's permission/authority. Always take it from the returned account.
     const transactionOptions = {
       authorization: [`${account.name}@${account.authority}`],
     };
-    console.log('12');
-
-    let result = eos.transaction({
-      actions: [{
-        account: "jmvzpmtc3tum",
-        name: "gameset",
-        data: {},
-        authorization: [{
-          actor: account.name,
-          permission: "active"
-        }]
-      }]
-    }).then((trx) => {
-      console.log(`transaction : ${trx.transaction_id}`);
-    }).catch(error => {
-      console.log('this is an error :');
-      console.log(error);
+    eos.transfer(account.name, 'jmvzpmtc3tum', '0.0000 EOS', 'memo', transactionOptions).then((trx) => {
+      // That's it!
+      // 다음 트랜젝션을 보내는 곳이 두번쨰 에러 장소이다.
+      console.log(`Transaction ID: ${trx.transaction_id}`);
+      console.log('hi');
+      // const result = contract.hi(...);
+    }).catch((error) => {
+      console.log('here0');
+      console.error(error);
+      //window fetch에 실패했다는 내용
+      console.log('here1');
     });
-    console.log('13');
-    /*
-        eos.transfer(account.name, 'jmvzpmtc3tum', '0.0000 EOS', 'memo', transactionOptions).then((trx) => {
-          // That's it!
-          // 다음 트랜젝션을 보내는 곳이 두번쨰 에러 장소이다.
-          console.log(`Transaction ID: ${trx.transaction_id}`);
-          console.log('hi');
-          // const result = contract.hi(...);
-        }).catch((error) => {
-          console.log('here0');
-          console.error(error);
-          //window fetch에 실패했다는 내용
-          console.log('here1');
-        });
-      }).catch((error) => {
-        // The user rejected this request, or doesn't have the appropriate requirements.
-        console.error(error);
-        console.log('here2');
-      });
-      console.log('10');*/
-    // export const getContract = (scatter, network, contract) => {
-    //   return scatter.eos(network, eos, {}).contract(contract)
-    // }
-    return false;
+  }).catch((error) => {
+    // The user rejected this request, or doesn't have the appropriate requirements.
+    console.error(error);
+    console.log('here2');
   });
+  console.log('10');*/
+// export const getContract = (scatter, network, contract) => {
+//   return scatter.eos(network, eos, {}).contract(contract)
+// }
+/*return false;
 });
-// getContract: function() {
-//   return eos.contract('randomNum()', requiredFields);
-//   contract(contract);
-// },
-
+});*/
+/*
+export default {
+  buttonGoGo,
+  goTransaction,
+  eos,
+};*/
 Vue.config.productionTip = false;
 
 new Vue({
