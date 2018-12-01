@@ -2,28 +2,35 @@
 <div class="card-bar">
   <div class="card">
     <div class="card-img" style="padding : 20px; padding-bottom : 0px; padding-top : 50px">
-      <img class="cardImg" id="card1" src="../assets/spadeAce.png" />
-      <img class="cardImg" id="card2" src="../assets/spadeAce.png" />
-      <img class="cardImg" id="card3" src="../assets/spadeAce.png" />
-      <img class="cardImg" id="card4" src="../assets/spadeAce.png" />
-      <img class="cardImg" id="card5" src="../assets/spadeAce.png" />
+      <img class="cardImg"  id="card1" src="../assets/cards/1.png" />
+      <img class="cardImg"  id="card2" src="../assets/cards/14.png" />
+      <img class="cardImg"  id="card3" src="../assets/cards/27.png" />
+      <img class="cardImg"  id="card4" src="../assets/cards/8.png" />
+      <img class="cardImg"  id="card5" src="../assets/cards/21.png" />
     </div>
     <div class="gold">
-      <h2 id="card-text" data-heading="FOURCARD">FOUR CARD</h2>
+      <h3 id="card-text" data-heading="FULL HOUSE">FULL HOUSE</h3>
     </div>
-    <div style="padding : 30px; padding-top: 0px"><button type="button" class="btn btn-danger" v-on:click="transactionGo">Login</button></div>
+    <div style="padding : 30px; padding-top: 0px">
+      <span id="point">point: {{point}}</span>
+      <button type="button" class="btn" v-on:click="transactionGo">Login</button>
+    </div>
   </div>
+</div>
+
+
 </div>
 </template>
 
 <script>
-//import {buttonGoGo,goTransaction,eos} from '../main.js';
 import ScatterJS from 'scatterjs-core';
 import ScatterEOS from 'scatterjs-plugin-eosjs';
 import Eos from 'eosjs';
 
 // Don't forget to tell ScatterJS which plugins you are using.
 
+let eos;
+let account;
 ScatterJS.plugins(new ScatterEOS());
 console.log('2');
 
@@ -37,27 +44,7 @@ const network = {
   chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
 };
 console.log('3');
-/*
-function goTransaction() {
-  eos.transaction({
-    actions: [{
-      account: "jmvzpmtc3tum",
-      name: "gameset",
-      data: {},
-      authorization: [{
-        actor: account.name,
-        permission: "active"
-      }]
-    }]
-  }).then((trx) => {
-    console.log(`transaction : ${trx.transaction_id}`);
-  }).catch(error => {
-    console.log('this is an error :');
-    console.log(error);
-  });
-  console.log('12');
-};*/
-// const connectionOptions = {initTimeout: 10000} =>optional!!
+// const connectionOptions = {initTimeout: 10000} =>optional
 // First we need to connect to the user's Scatter.
 ScatterJS.scatter.connect('eos-poker').then((connected) => {
   console.log('4');
@@ -89,7 +76,7 @@ ScatterJS.scatter.connect('eos-poker').then((connected) => {
     // Never hardcode them even if you are prompting
 
     // the user for their account name beforehand. They could still give you a different account.
-    const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+    account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
     console.log('9');
     // account가 들어갈 자리다.
     console.log('getAccount : ', account.name);
@@ -100,10 +87,8 @@ ScatterJS.scatter.connect('eos-poker').then((connected) => {
     console.log('10');
 
     // Get a proxy reference to eosjs which you can use to sign transactions with a user's Scatter.
-    const eos = scatter.eos(network, Eos, eosOptions);
-    console.log(eos);
+    eos = scatter.eos(network, Eos, eosOptions);
     console.log('11');
-
     //where eos.transaction go
     eos.getTableRows({
       code: 'jmvzpmtc3tum',
@@ -113,28 +98,28 @@ ScatterJS.scatter.connect('eos-poker').then((connected) => {
     }).then(function(res) {
       console.log('this is a response:');
       console.log(res);
-        console.log('this is a player:');
+      console.log('this is a player:');
       console.log(res.rows[0].key);
-        console.log('this is a player\'\s score:');
+      console.log('this is a player\'\s score:');
       console.log(res.rows[0].myscore);
     });
-
   });
 });
 
 export default {
 
   data() {
-    return {};
+    return {
+      point: 8,
+    };
   },
   methods: {
     transactionGo: function() {
-      console.log('this is coming out');
       //this was the place
       eos.transaction({
         actions: [{
           account: "jmvzpmtc3tum",
-          name: "gameset",
+          name: "tablereset",
           data: {},
           authorization: [{
             actor: account.name,
@@ -143,6 +128,8 @@ export default {
         }]
       }).then((trx) => {
         console.log(`transaction : ${trx.transaction_id}`);
+        //여기에서 받아온 숫자를 백으로 보내고 그림 5장이랑 문구를 받아오고 .then안에다가 this,getCard를 넣어준다.
+        this.getCard();
       }).catch(error => {
         console.log('this is an error :');
         console.log(error);
@@ -159,6 +146,7 @@ export default {
           console.error(error);
         });
 
+      //굉장히 포문으로 처리하고 싶게생겼다.
       var c1 = document.getElementById('card1');
       var c2 = document.getElementById('card2');
       var c3 = document.getElementById('card3');
@@ -192,7 +180,12 @@ export default {
         easing: 'easeOut',
       });
     },
+    handler: function(){
+      this.transactionGo();
+      this.getCard();
+    },
   },
+  created() {},
 };
 </script>
 
@@ -204,9 +197,8 @@ export default {
   background-color: black;
 }
 
-.btn btn-danger {
-  width: 200px;
-  height: 50px;
+.btn {
+  {padding:150px 40px;}
 }
 
 
@@ -234,17 +226,23 @@ export default {
 
 #card-text:after {
 
-    background: none;
-    content: attr(data-heading);
-    left: 0;
-    top: 0;
-    z-index: -1;
-    position: absolute;
-    text-shadow:
-      -1px 0 1px #c6bb9f,
-      0 1px 1px #c6bb9f,
-      5px 5px 10px rgba(0, 0, 0, 0.4),
-      -5px -5px 10px rgba(0, 0, 0, 0.4);
+  background: none;
+  content: attr(data-heading);
+  left: 0;
+  top: 0;
+  z-index: -1;
+  position: absolute;
+  text-shadow:
+    -1px 0 1px #c6bb9f,
+    0 1px 1px #c6bb9f,
+    5px 5px 10px rgba(0, 0, 0, 0.4),
+    -5px -5px 10px rgba(0, 0, 0, 0.4);
+}
+
+#point {
+  font-size: 30px;
+  color: white;
+  margin-right: 200px;
 }
 
 body {

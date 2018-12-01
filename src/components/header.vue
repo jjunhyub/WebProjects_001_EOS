@@ -40,9 +40,11 @@ export default {
       var popdown = document.getElementsByClassName("popuptext");
       for(var i=0;i<3;i++)
       {
-        popdown[i].classList.toggle("hide");
+        popdown[i].classList.toggle( 'hide', true );
+        popdown[i].classList.toggle( 'show', false );
       }
-      popup.classList.toggle("show");
+      popup.classList.toggle("show",true);
+      popup.classList.toggle("hide",false);
     },
   },
 };
@@ -96,8 +98,6 @@ export default {
 }
 .hide {
   visibility: hidden;
-  -webkit-animation: fadeOut 1s;
-  animation: fadeOut 1s;
 }
 /* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {

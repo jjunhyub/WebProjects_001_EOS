@@ -29,13 +29,7 @@ export default {
     },
   },
   created() {
-    this.$http.get('/api/getLatestGame').then(response => {
-      console.log(response.data.created_at);
-      console.log(response.data.prize);
-      this.createdTime = response.data.created_at;
-    }).catch(error => {
-      console.error(error);
-    });
+    this.timeChecker();
   },
 }
 </script>
