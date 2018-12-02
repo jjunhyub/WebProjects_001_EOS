@@ -27,12 +27,9 @@ import ScatterJS from 'scatterjs-core';
 import ScatterEOS from 'scatterjs-plugin-eosjs';
 import Eos from 'eosjs';
 
-// Don't forget to tell ScatterJS which plugins you are using.
-
 let eos;
 let account;
 ScatterJS.plugins(new ScatterEOS());
-console.log('2');
 
 // Networks are used to reference certain blockchains.
 // They let you get accounts and help you build signature providers.
@@ -43,23 +40,16 @@ const network = {
   port: 443,
   chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
 };
-console.log('3');
-// const connectionOptions = {initTimeout: 10000} =>optional
 // First we need to connect to the user's Scatter.
 ScatterJS.scatter.connect('eos-poker').then((connected) => {
-  console.log('4');
-  //여기가 첫번째 에러가 나는 지점이다.
-  // 'My-App' 둘다 된다 왜그럴까?
   // If the user does not have Scatter or it is Locked or Closed this will return false;
   if (!connected) {
     return false;
   }
-  console.log('5');
 
   const {
     scatter,
   } = ScatterJS;
-  console.log('6');
 
   // Now we need to get an identity from the user.
   // We're also going to require an account that is connected to the network we're using.
@@ -68,17 +58,13 @@ ScatterJS.scatter.connect('eos-poker').then((connected) => {
     personal: [],
     location: [],
   };
-  console.log('7');
 
   scatter.getIdentity(requiredFields).then(() => {
-    console.log('8');
     // Always use the accounts you got back from Scatter.
     // Never hardcode them even if you are prompting
 
     // the user for their account name beforehand. They could still give you a different account.
     account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
-    console.log('9');
-    // account가 들어갈 자리다.
     console.log('getAccount : ', account.name);
     // You can pass in any additional options you want into the eosjs reference.
     const eosOptions = {
@@ -88,8 +74,7 @@ ScatterJS.scatter.connect('eos-poker').then((connected) => {
 
     // Get a proxy reference to eosjs which you can use to sign transactions with a user's Scatter.
     eos = scatter.eos(network, Eos, eosOptions);
-    console.log('11');
-    //where eos.transaction go
+
     eos.getTableRows({
       code: 'jmvzpmtc3tum',
       scope: 'jmvzpmtc3tum',
@@ -115,7 +100,6 @@ export default {
   },
   methods: {
     transactionGo: function() {
-      //this was the place
       eos.transaction({
         actions: [{
           account: "jmvzpmtc3tum",
@@ -134,7 +118,6 @@ export default {
         console.log('this is an error :');
         console.log(error);
       });
-      console.log('12');
     },
     getCard: function() {
       this.$http.post('/api/getCard', {
@@ -145,7 +128,6 @@ export default {
         }).catch(error => {
           console.error(error);
         });
-
       //굉장히 포문으로 처리하고 싶게생겼다.
       var c1 = document.getElementById('card1');
       var c2 = document.getElementById('card2');

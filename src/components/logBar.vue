@@ -186,7 +186,6 @@
     </table>
   </div>
 </div>
-
 </template>
 
 <script>
@@ -197,7 +196,6 @@ export default {
     };
   },
   methods: {
-    //자주 쓸것 같아서 함수로 뺌
     getLog: function() {
       this.$http.get('/api/getGames').then(response => {
         this.games = response.data;
