@@ -13,15 +13,11 @@ export default {
   data() {
     return {
       createdTime: 0,
-
     };
   },
   methods: {
-    //자주 쓸것 같아서 함수로 뺌
     timeChecker: function() {
       this.$http.get('/api/getLatestGame').then(response => {
-        console.log(response.data.created_at);
-        console.log(response.data.prize);
         this.createdTime = response.data.created_at;
       }).catch(error => {
         console.error(error);

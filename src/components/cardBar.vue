@@ -13,7 +13,7 @@
     </div>
     <div style="padding : 30px; padding-top: 0px">
       <span id="point">point: {{point}}</span>
-      <button type="button" class="btn" v-on:click="transactionGo">Login</button>
+      <button type="button" class="btn" v-on:click="draw">Login</button>
     </div>
   </div>
 </div>
@@ -40,6 +40,7 @@ const network = {
   port: 443,
   chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
 };
+
 // First we need to connect to the user's Scatter.
 ScatterJS.scatter.connect('eos-poker').then((connected) => {
   // If the user does not have Scatter or it is Locked or Closed this will return false;
@@ -50,7 +51,6 @@ ScatterJS.scatter.connect('eos-poker').then((connected) => {
   const {
     scatter,
   } = ScatterJS;
-
   // Now we need to get an identity from the user.
   // We're also going to require an account that is connected to the network we're using.
   const requiredFields = {
@@ -70,24 +70,9 @@ ScatterJS.scatter.connect('eos-poker').then((connected) => {
     const eosOptions = {
       expireInSeconds: 60,
     };
-    console.log('10');
 
     // Get a proxy reference to eosjs which you can use to sign transactions with a user's Scatter.
     eos = scatter.eos(network, Eos, eosOptions);
-
-    eos.getTableRows({
-      code: 'jmvzpmtc3tum',
-      scope: 'jmvzpmtc3tum',
-      table: 'scoreboard',
-      json: true,
-    }).then(function(res) {
-      console.log('this is a response:');
-      console.log(res);
-      console.log('this is a player:');
-      console.log(res.rows[0].key);
-      console.log('this is a player\'\s score:');
-      console.log(res.rows[0].myscore);
-    });
   });
 });
 
@@ -96,35 +81,65 @@ export default {
   data() {
     return {
       point: 8,
+      randomNum: 0,
     };
   },
   methods: {
-    transactionGo: function() {
-      eos.transaction({
-        actions: [{
-          account: "jmvzpmtc3tum",
-          name: "tablereset",
-          data: {},
-          authorization: [{
-            actor: account.name,
-            permission: "active"
-          }]
-        }]
-      }).then((trx) => {
-        console.log(`transaction : ${trx.transaction_id}`);
-        //여기에서 받아온 숫자를 백으로 보내고 그림 5장이랑 문구를 받아오고 .then안에다가 this,getCard를 넣어준다.
-        this.getCard();
-      }).catch(error => {
-        console.log('this is an error :');
-        console.log(error);
+    login: function(){
+      ScatterJS.scatter.connect('eos-poker').then((connected) => {
+        // If the user does not have Scatter or it is Locked or Closed this will return false;
+        if (!connected) {
+          return false;
+        }
+
+        const {
+          scatter,
+        } = ScatterJS;
+
+        // Now we need to get an identity from the user.
+        // We're also going to require an account that is connected to the network we're using.
+        const requiredFields = {
+          accounts: [network],
+          personal: [],
+          location: [],
+        };
+
+        scatter.getIdentity(requiredFields).then(() => {
+          // Always use the accounts you got back from Scatter.
+          // Never hardcode them even if you are prompting
+
+          // the user for their account name beforehand. They could still give you a different account.
+          account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+          console.log('getAccount : ', account.name);
+          // You can pass in any additional options you want into the eosjs reference.
+          const eosOptions = {
+            expireInSeconds: 60,
+          };
+
+          // Get a proxy reference to eosjs which you can use to sign transactions with a user's Scatter.
+          eos = scatter.eos(network, Eos, eosOptions);
+        });
+      }).then(() => {
+        //scatter login이 끝나는 곳
+        //user테이블에 등록되어있으면 skip
+        //user테이블에 등록되어있지 않으면 add
+        this.$http.post('/api/login', {
+            account: account.name,
+            //로그인한 유저의 정보.
+          }).catch(error => {
+            console.error(error);
+          });
       });
     },
-    getCard: function() {
+    getCard: function(/*randNum*/) {
+      console.log('foow');
       this.$http.post('/api/getCard', {
           key: Math.floor((Math.random() * 2598960) + 1),
+          //key: randNum,account.name,gameNum
         })
         .then(response => {
           console.log(response.data);
+          //where 6png arrives
         }).catch(error => {
           console.error(error);
         });
@@ -162,9 +177,43 @@ export default {
         easing: 'easeOut',
       });
     },
-    handler: function(){
-      this.transactionGo();
-      this.getCard();
+    draw: function() {
+      eos.transaction({
+        actions: [{
+          account: "jmvzpmtc3tum",
+          name: "upsert"/*"tablereset"*/,
+          data: {
+            user: account.name,
+          },
+          authorization: [{
+            actor: account.name,
+            permission: "active"
+          }]
+        }]
+      }).then((trx) => {
+        console.log(`transaction : ${trx.transaction_id}`);
+        eos.getTableRows({
+          code: 'jmvzpmtc3tum',
+          scope: 'jmvzpmtc3tum',
+          table: 'people'/*'scoreboard'*/,
+          lower_bound: account.name,
+          json: true,
+        }).then(function(res) {
+          console.log('this is a response:');
+          console.log(res);
+          console.log('this is a player:');
+          console.log(res.rows[0].key);
+          console.log('this is a player\'\s score:');
+          console.log(res.rows[0].myhand);
+          //여기서 key==account.name인 곳의 myhand를 읽어오면 그것이 랜덤 숫자.
+          //여기에서 받아온 숫자를 백으로 보내고 그림 5장이랑 문구를 받아오고 .then안에다가 this,getCard를 넣어준다.
+          console.log('fow');
+          this.getCard(/**/);
+        });
+      }).catch(error => {
+        console.log('this is an error :');
+        console.log(error);
+      });
     },
   },
   created() {},
