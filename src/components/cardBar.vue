@@ -131,15 +131,14 @@ export default {
           });
       });
     },
-    getCard: function(/*randNum*/) {
-      console.log('foow');
+    getCard: function(randNum) {
       this.$http.post('/api/getCard', {
-          key: Math.floor((Math.random() * 2598960) + 1),
-          //key: randNum,account.name,gameNum
+          key: randNum,
+          //key: randNum,account.name,gameNum 이걸 전부 보내야  entries table에 데이터 추가 가능
         })
         .then(response => {
           console.log(response.data);
-          //where 6png arrives
+          //where 6 png arrives
         }).catch(error => {
           console.error(error);
         });
@@ -181,7 +180,7 @@ export default {
       eos.transaction({
         actions: [{
           account: "jmvzpmtc3tum",
-          name: "upsert"/*"tablereset"*/,
+          name: "upsert",
           data: {
             user: account.name,
           },
@@ -195,7 +194,7 @@ export default {
         eos.getTableRows({
           code: 'jmvzpmtc3tum',
           scope: 'jmvzpmtc3tum',
-          table: 'people'/*'scoreboard'*/,
+          table: 'people',
           lower_bound: account.name,
           json: true,
         }).then(function(res) {
@@ -207,8 +206,7 @@ export default {
           console.log(res.rows[0].myhand);
           //여기서 key==account.name인 곳의 myhand를 읽어오면 그것이 랜덤 숫자.
           //여기에서 받아온 숫자를 백으로 보내고 그림 5장이랑 문구를 받아오고 .then안에다가 this,getCard를 넣어준다.
-          console.log('fow');
-          this.getCard(/**/);
+          this.getCard(res.rows[0].myhand);
         });
       }).catch(error => {
         console.log('this is an error :');
