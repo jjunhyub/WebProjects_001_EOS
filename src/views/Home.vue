@@ -27,6 +27,7 @@ export default {
   name: 'home',
   data() {
     return {
+      games: [],
       location: localStorage.location || '',
       icons: {},
     };
@@ -36,5 +37,4 @@ export default {
 </script>
 
 <style>
-
 </style>

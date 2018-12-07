@@ -2,7 +2,7 @@
 <div>
   <div class="eos-bar" style="padding : 30px;">
     <h3>Left time : {{createdTime}}</h3>
-    <span style="margin-right : 20px">400.4672</span>
+    <span style="margin-right : 20px">{{ this.$parent.games[0].prize }}</span>
     <img class="money-pot-image" src="../assets/eoslogo.png" width=45px height=78px />
   </div>
 </div>
@@ -17,11 +17,7 @@ export default {
   },
   methods: {
     timeChecker: function() {
-      this.$http.get('/api/getLatestGame').then(response => {
-        this.createdTime = response.data.created_at;
-      }).catch(error => {
-        console.error(error);
-      });
+
     },
   },
   created() {
