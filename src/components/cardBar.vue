@@ -177,7 +177,7 @@ export default {
         eos.getTableRows({
           code: 'jmvzpmtc3tum',
           scope: 'jmvzpmtc3tum',
-          table: 'saramz',
+          table: 'persons',
           lower_bound: account.name, //=table_key
           json: true,
         }).then(function(res) {
