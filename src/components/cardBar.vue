@@ -9,7 +9,7 @@
       <img class="cardImg" id="card5" v-bind:src=card5 />
     </div>
     <div>
-      <h4 class="shadow-typo">full house</h4>
+      <h4 class="shadow-typo">{{cardName}}</h4>
     </div>
     <div style="padding : 30px; padding-top: 0px">
       <button type="button" class="btn" id="disabled" disabled>POINT : {{point}}</button>
@@ -41,6 +41,7 @@ const requiredFields = {
   personal: [],
   location: [],
 };
+
 function getCard(made) {
   vueCompo.$http.post('/api/getCard', {
       made: made,
@@ -96,10 +97,13 @@ function getCard(made) {
 
   //원래 snabbt가 있던 곳
 }
+
 function login() {
   ScatterJS.scatter.connect('eos-poker').then((connected) => {
     // If the user does not have Scatter or it is Locked or Closed this will return false;
-    if (!connected) {return false;}
+    if (!connected) {
+      return false;
+    }
 
     const {
       scatter
@@ -114,7 +118,9 @@ function login() {
       account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
       console.log('getAccount : ', account.name);
       vueCompo.$http.post('/api/login', {
-        key_account : account.name,
+        key_account: account.name,
+      }).then(response => {
+        vueCompo.point = response.data.point;
       });
       // You can pass in any additional options you want into the eosjs reference.
       const eosOptions = {
@@ -135,14 +141,13 @@ export default {
 
   data() {
     return {
-      point: 8,
-      randomNum: 70,
-      gameNum: 0,
-      card1: "/cards/53.png",
-      card2: "/cards/53.png",
-      card3: "/cards/53.png",
-      card4: "/cards/53.png",
-      card5: "/cards/53.png",
+      point: 7,
+      cardName: "",
+      card1: "/cards/54.png",
+      card2: "/cards/54.png",
+      card3: "/cards/54.png",
+      card4: "/cards/54.png",
+      card5: "/cards/54.png",
     };
   },
   methods: {
@@ -164,10 +169,20 @@ export default {
         eos.getTableRows({
           code: 'jmvzpmtc3tum',
           scope: 'jmvzpmtc3tum',
-          table: 'saramz',
+          table: 'persons',
           lower_bound: account.name, //=table_key
           json: true,
         }).then(function(res) {
+          if (res.rows[0].myhand <= 1302540) vueCompo.cardName = "TOP CARD";
+          else if (res.rows[0].myhand <= 2400780) vueCompo.cardName = "ONE PAIR";
+          else if (res.rows[0].myhand <= 2524332) vueCompo.cardName = "TWO PAIR";
+          else if (res.rows[0].myhand <= 2579244) vueCompo.cardName = "TRIPLE";
+          else if (res.rows[0].myhand <= 2589444) vueCompo.cardName = "STRAIGHT";
+          else if (res.rows[0].myhand <= 2594552) vueCompo.cardName = "FLUSH";
+          else if (res.rows[0].myhand <= 2598296) vueCompo.cardName = "FULL HOUSE";
+          else if (res.rows[0].myhand <= 2598920) vueCompo.cardName = "FOUR CARD";
+          else if (res.rows[0].myhand <= 2598956) vueCompo.cardName = "STRAIGHT FLUSH";
+          else if (res.rows[0].myhand <= 2598960) vueCompo.cardName = "ROYAL STRAIGHT FLUSH";
           getCard(res.rows[0].myhand);
         });
       }).catch(error => {
@@ -187,6 +202,7 @@ export default {
   color: black;
   background-color: black;
 }
+
 .btn {
   padding: 15px 50px;
   border: 2px solid #f7f7f7;
@@ -198,25 +214,31 @@ export default {
   color: white;
   font-size: 1rem;
 }
+
 .btn:hover {
   border-radius: 30px;
 }
+
 #disabled {
   opacity: 1;
   margin-right: 100px;
 }
+
 .cardImg {
   width: 130px;
   height: 200px;
   margin: 0 5px;
 }
+
 body {
   background: radial-gradient(ellipse at center, #443501 0%, #000000 100%);
   height: 100%;
 }
+
 h4 {
   margin-bottom: 20px;
 }
+
 .shadow-typo {
   position: relative;
   display: inline-block;

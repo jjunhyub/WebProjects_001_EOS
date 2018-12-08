@@ -60,34 +60,13 @@ export default {
         console.error(error);
       });
     },
-    getEntries:function(){
-      this.$http.get('/api/getGameLogs').then(response => {
-        this.games = response.data;
-        console.log('game got : ');
-        console.log(this.games);
-      }).then(() => {
-        let current_time = moment.utc().valueOf();
-        let game_time = moment.utc(this.games[0].created_at).valueOf();
-        this.differentTime = 1800 - Math.floor((current_time - game_time) / 1000);
-        this.prize = this.games[0].prize;
-        var duration = moment.duration(this.differentTime*1000, 'milliseconds');
-        var interval = 1000;
-        setInterval(function() {
-          duration = moment.duration(duration - interval, 'milliseconds');
-          vueCompo.leftTime = duration.minutes().toString() + ":" + duration.seconds().toString();
-        }, interval);
-      }).catch(error => {
-        console.log('getGameError : ');
-        console.error(error);
-      });
   },
   mounted() {},
   created() {
     this.getGameLogs();
-    this.getEntries();
     vueCompo = this;
   },
-};
+}
 </script>
 
 <style>
