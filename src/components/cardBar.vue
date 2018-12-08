@@ -121,12 +121,12 @@ function login() {
         .then(response => {
           if (response.data.result) {
             vueCompo.point = response.data.point;
-            let cards = JSON.parse(JSON.parse(response.data.made));
-            vueCompo.card1 = cards[0];
-            vueCompo.card2 = cards[1];
-            vueCompo.card3 = cards[2];
-            vueCompo.card4 = cards[3];
-            vueCompo.card5 = cards[4];
+            let made = JSON.parse(JSON.parse(response.data.made));
+            vueCompo.card1 = "/cards/" + made[0].toString() + ".png";
+            vueCompo.card2 = "/cards/" + made[1].toString() + ".png";
+            vueCompo.card3 = "/cards/" + made[2].toString() + ".png";
+            vueCompo.card4 = "/cards/" + made[3].toString() + ".png";
+            vueCompo.card5 = "/cards/" + made[4].toString() + ".png";
           }
         });
       // You can pass in any additional options you want into the eosjs reference.
