@@ -42,8 +42,6 @@ export default {
     getGameLogs: function() {
       this.$http.get('/api/getGameLogs').then(response => {
         this.games = response.data;
-        console.log('game got : ');
-        console.log(this.games);
       }).then(() => {
         let current_time = moment.utc().valueOf();
         let game_time = moment.utc(this.games[0].created_at).valueOf();

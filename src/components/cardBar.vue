@@ -50,8 +50,6 @@ function getCard(made) {
     })
     .then(response => {
       let made = JSON.parse(JSON.parse(response.data));
-      console.log(made)
-
       vueCompo.card1 = "/cards/" + made[0].toString() + ".png";
       vueCompo.card2 = "/cards/" + made[1].toString() + ".png";
       vueCompo.card3 = "/cards/" + made[2].toString() + ".png";
@@ -116,12 +114,27 @@ function login() {
       console.log('before account');
       // the user for their account name beforehand. They could still give you a different account.
       account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
-      console.log('getAccount : ', account.name);
       vueCompo.$http.post('/api/login', {
         key_account: account.name,
       }).then(response => {
         vueCompo.point = response.data.point;
       });
+
+      vueCompo.$http.post('/api/getEntry', {
+        user_name : account.name,
+        game_id : vueCompo.$parent.games[0].id
+      })
+        .then(response => {
+          if (response.data.result) {
+            vueCompo.point = response.data.point;
+            let made = JSON.parse(JSON.parse(response.data.made));
+            vueCompo.card1 = "/cards/" + made[0].toString() + ".png";
+            vueCompo.card2 = "/cards/" + made[1].toString() + ".png";
+            vueCompo.card3 = "/cards/" + made[2].toString() + ".png";
+            vueCompo.card4 = "/cards/" + made[3].toString() + ".png";
+            vueCompo.card5 = "/cards/" + made[4].toString() + ".png";
+          }
+        });
       // You can pass in any additional options you want into the eosjs reference.
       const eosOptions = {
         expireInSeconds: 60,
