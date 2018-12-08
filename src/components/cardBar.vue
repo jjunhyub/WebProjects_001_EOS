@@ -55,8 +55,14 @@ function getCard(made) {
       vueCompo.card3 = "/cards/" + made[2].toString() + ".png";
       vueCompo.card4 = "/cards/" + made[3].toString() + ".png";
       vueCompo.card5 = "/cards/" + made[4].toString() + ".png";
-      //where 6 png arrives
-      //굉장히 포문으로 처리하고 싶게생겼다.
+
+      //포인트 차감 반영
+      vueCompo.$http.post('/api/login', {
+        key_account: account.name,
+      }).then(response => {
+        vueCompo.point = response.data.point;
+      });
+
       var c1 = document.getElementById('card1');
       var c2 = document.getElementById('card2');
       var c3 = document.getElementById('card3');
@@ -121,13 +127,23 @@ function login() {
       });
 
       vueCompo.$http.post('/api/getEntry', {
-        user_name : account.name,
-        game_id : vueCompo.$parent.games[0].id
-      })
+          user_name: account.name,
+          game_id: vueCompo.$parent.games[0].id,
+        })
         .then(response => {
           if (response.data.result) {
-            vueCompo.point = response.data.point;
             let made = JSON.parse(JSON.parse(response.data.made));
+            if (response.data.made_id <= 1302540) vueCompo.cardName = "TOP CARD";
+            else if (response.data.made_id <= 2400780) vueCompo.cardName = "ONE PAIR";
+            else if (response.data.made_id <= 2524332) vueCompo.cardName = "TWO PAIR";
+            else if (response.data.made_id <= 2579244) vueCompo.cardName = "TRIPLE";
+            else if (response.data.made_id <= 2589444) vueCompo.cardName = "STRAIGHT";
+            else if (response.data.made_id <= 2594552) vueCompo.cardName = "FLUSH";
+            else if (response.data.made_id <= 2598296) vueCompo.cardName = "FULL HOUSE";
+            else if (response.data.made_id <= 2598920) vueCompo.cardName = "FOUR CARD";
+            else if (response.data.made_id <= 2598956) vueCompo.cardName = "STRAIGHT FLUSH";
+            else if (response.data.made_id <= 2598960) vueCompo.cardName = "ROYAL STRAIGHT FLUSH";
+
             vueCompo.card1 = "/cards/" + made[0].toString() + ".png";
             vueCompo.card2 = "/cards/" + made[1].toString() + ".png";
             vueCompo.card3 = "/cards/" + made[2].toString() + ".png";
