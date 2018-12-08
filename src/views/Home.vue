@@ -32,7 +32,11 @@ export default {
       icons: {},
     };
   },
+  methods: {
+  },
   mounted() {},
+  created() {
+  },
 };
 </script>
 

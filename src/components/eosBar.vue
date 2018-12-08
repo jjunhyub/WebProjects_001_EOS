@@ -16,12 +16,8 @@ export default {
     };
   },
   methods: {
-    timeChecker: function() {
-
-    },
   },
   created() {
-    this.timeChecker();
   },
 }
 </script>

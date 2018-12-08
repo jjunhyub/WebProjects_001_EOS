@@ -34,7 +34,10 @@ export default {
     getGameLogs: function() {
       this.$http.get('/api/getGameLogs').then(response => {
         this.$parent.games = response.data;
+        console.log('game got : ');
+        console.log(this.$parent.games);
       }).catch(error => {
+        console.log('getGameError : ');
         console.error(error);
       });
     },
