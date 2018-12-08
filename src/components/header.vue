@@ -8,17 +8,16 @@
   <div class="collapse navbar-collapse" id="navbarColor02">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <!--href가 아니라 button으로 해서 창 뜨는 식으로해도 좋을-->
         <span class="nav-link" href="#">Home <span class="sr-only">(current)</span></span>
       </li>
       <li class="nav-item">
-        <span class="nav-link" v-on:click="popUp('Community')">Community<span class="popuptext" id="Community">{{CommunityContent}}</span></span>
+        <span class="nav-link">Community<span class="popuptext" id="Community">{{CommunityContent}}</span></span>
       </li>
       <li class="nav-item">
-        <span class="nav-link" v-on:click="popUp('Fairness')">Fairness<span class="popuptext" id="Fairness">{{FairnessContent}}</span></span>
+        <span class="nav-link">Fairness<span class="popuptext" id="Fairness">{{FairnessContent}}</span></span>
       </li>
       <li class="nav-item">
-        <span class="nav-link" v-on:click="popUp('HowToPlay')">How to Play<span class="popuptext" id="HowToPlay">{{HowToPlayContent}}</span></span>
+        <span class="nav-link">How to Play<span class="popuptext" id="HowToPlay">{{HowToPlayContent}}</span></span>
       </li>
     </ul>
   </div>
@@ -27,26 +26,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-      CommunityContent: 'this is a community',
-      FairnessContent: 'this is a fairness',
-      HowToPlayContent: 'this is a how to play',
-    };
-  },
-  methods: {
-    popUp: function(myPopup) {
-      var popup = document.getElementById(myPopup);
-      var popdown = document.getElementsByClassName("popuptext");
-      for(var i=0;i<3;i++)
-      {
-        popdown[i].classList.toggle( 'hide', true );
-        popdown[i].classList.toggle( 'show', false );
-      }
-      popup.classList.toggle("show",true);
-      popup.classList.toggle("hide",false);
-    },
-  },
 };
 </script>
 

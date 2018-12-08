@@ -170,7 +170,7 @@ export default {
 
   data() {
     return {
-      point: 7,
+      point: 0,
       cardName: "",
       card1: "/cards/54.png",
       card2: "/cards/54.png",
