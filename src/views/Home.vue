@@ -1,5 +1,5 @@
 <template>
-  <!--이곳은 실제로 페이지가 다른 view들을 저장한다. vue라고 다 똑같은 컴포넌트인것이 아니다.-->
+<!--이곳은 실제로 페이지가 다른 view들을 저장한다. vue라고 다 똑같은 컴포넌트인것이 아니다.-->
 <div class="home">
   <eos-bar></eos-bar>
   <card-bar></card-bar>
@@ -16,6 +16,9 @@ import EosBar from '../components/eosBar.vue';
 import CardBar from '../components/cardBar.vue';
 import LogBar from '../components/logBar.vue';
 
+var moment = require('moment');
+let vueCompo;
+moment().format();
 ScatterJS.plugins(new ScatterEOS());
 
 export default {
@@ -30,12 +33,59 @@ export default {
       games: [],
       location: localStorage.location || '',
       icons: {},
+      differentTime: 0,
+      prize: 0,
+      leftTime: "",
     };
   },
   methods: {
+    getGameLogs: function() {
+      this.$http.get('/api/getGameLogs').then(response => {
+        this.games = response.data;
+        console.log('game got : ');
+        console.log(this.games);
+      }).then(() => {
+        let current_time = moment.utc().valueOf();
+        let game_time = moment.utc(this.games[0].created_at).valueOf();
+        this.differentTime = 1800 - Math.floor((current_time - game_time) / 1000);
+        this.prize = this.games[0].prize;
+        var duration = moment.duration(this.differentTime*1000, 'milliseconds');
+        var interval = 1000;
+        setInterval(function() {
+          duration = moment.duration(duration - interval, 'milliseconds');
+          vueCompo.leftTime = duration.minutes().toString() + ":" + duration.seconds().toString();
+        }, interval);
+      }).catch(error => {
+        console.log('getGameError : ');
+        console.error(error);
+      });
+    },
+    getEntries:function(){
+      this.$http.get('/api/getGameLogs').then(response => {
+        this.games = response.data;
+        console.log('game got : ');
+        console.log(this.games);
+      }).then(() => {
+        let current_time = moment.utc().valueOf();
+        let game_time = moment.utc(this.games[0].created_at).valueOf();
+        this.differentTime = 1800 - Math.floor((current_time - game_time) / 1000);
+        this.prize = this.games[0].prize;
+        var duration = moment.duration(this.differentTime*1000, 'milliseconds');
+        var interval = 1000;
+        setInterval(function() {
+          duration = moment.duration(duration - interval, 'milliseconds');
+          vueCompo.leftTime = duration.minutes().toString() + ":" + duration.seconds().toString();
+        }, interval);
+      }).catch(error => {
+        console.log('getGameError : ');
+        console.error(error);
+      });
   },
   mounted() {},
   created() {
+    this.getGameLogs();
+    this.getEntries();
+    vueCompo = this;
   },
 };
 </script>

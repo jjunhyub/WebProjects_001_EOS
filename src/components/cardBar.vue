@@ -2,11 +2,11 @@
 <div class="card-bar">
   <div class="card">
     <div class="card-img" style="padding : 20px; padding-bottom : 0px; padding-top : 50px">
-      <img class="cardImg" id="card1" src="../assets/cards/1.png" />
-      <img class="cardImg" id="card2" src="../assets/cards/14.png" />
-      <img class="cardImg" id="card3" src="../assets/cards/27.png" />
-      <img class="cardImg" id="card4" src="../assets/cards/8.png" />
-      <img class="cardImg" id="card5" src="../assets/cards/21.png" />
+      <img class="cardImg" id="card1" v-bind:src=card1 />
+      <img class="cardImg" id="card2" v-bind:src=card2 />
+      <img class="cardImg" id="card3" v-bind:src=card3 />
+      <img class="cardImg" id="card4" v-bind:src=card4 />
+      <img class="cardImg" id="card5" v-bind:src=card5 />
     </div>
     <div>
       <h4 class="shadow-typo">full house</h4>
@@ -43,13 +43,19 @@ const requiredFields = {
 };
 function getCard(made) {
   vueCompo.$http.post('/api/getCard', {
-      key_account: made,
-      //game: gameNum,
-      key_name: account.name,
-      //key: randNum,account.name,gameNum 이걸 전부 보내야  entries table에 데이터 추가 가능
+      made: made,
+      game_id: vueCompo.$parent.games[0].id,
+      user_name: account.name,
     })
     .then(response => {
-      console.log(response.data);
+      let made = JSON.parse(JSON.parse(response.data));
+      console.log(made)
+
+      vueCompo.card1 = "/cards/" + made[0].toString() + ".png";
+      vueCompo.card2 = "/cards/" + made[1].toString() + ".png";
+      vueCompo.card3 = "/cards/" + made[2].toString() + ".png";
+      vueCompo.card4 = "/cards/" + made[3].toString() + ".png";
+      vueCompo.card5 = "/cards/" + made[4].toString() + ".png";
       //where 6 png arrives
       //굉장히 포문으로 처리하고 싶게생겼다.
       var c1 = document.getElementById('card1');
@@ -104,14 +110,12 @@ function login() {
       // Always use the accounts you got back from Scatter.
       // Never hardcode them even if you are prompting
       console.log('before account');
-      console.log(account);
       // the user for their account name beforehand. They could still give you a different account.
       account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
       console.log('getAccount : ', account.name);
-      //vueCompo.$http.post('/api/login', {
-      //  key_account : account.name,
-      ////여기서 account.name을 읽지를 못함()
-      //});
+      vueCompo.$http.post('/api/login', {
+        key_account : account.name,
+      });
       // You can pass in any additional options you want into the eosjs reference.
       const eosOptions = {
         expireInSeconds: 60,
@@ -134,6 +138,11 @@ export default {
       point: 8,
       randomNum: 70,
       gameNum: 0,
+      card1: "/cards/53.png",
+      card2: "/cards/53.png",
+      card3: "/cards/53.png",
+      card4: "/cards/53.png",
+      card5: "/cards/53.png",
     };
   },
   methods: {
@@ -168,7 +177,6 @@ export default {
   },
   created() {
     vueCompo = this;
-    //게임 남은 시간
   },
 };
 </script>
