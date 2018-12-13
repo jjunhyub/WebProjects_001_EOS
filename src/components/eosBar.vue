@@ -2,8 +2,7 @@
 <div>
   <div class="eos-bar" style="padding : 30px;">
     <h3>LEFT TIME  :  {{$parent.leftTime}}</h3>
-    <span style="margin-right : 20px">{{ $parent.prize }}</span>
-    <img class="money-pot-image" src="../assets/eoslogo.png" width=45px height=78px />
+    <span style="margin-right : 20px">{{ $parent.prize }}P</span>
   </div>
 </div>
 </template>
