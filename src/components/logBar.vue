@@ -33,10 +33,12 @@ export default {
   },
   methods: {
     cardMaker: function(num) {
-      if (num - 1 <= 13) return '♠' + this.cardArr[((num - 1) % 13)];
-      if (num - 1 <= 26) return '♦' + this.cardArr[((num - 1) % 13)];
-      if (num - 1 <= 39) return '♥' + this.cardArr[((num - 1) % 13)];
-      if (num - 1 <= 52) return '♣' + this.cardArr[((num - 1) % 13)];
+      let s;
+      if (num <= 13) s = '♠';
+      if (num <= 26) s = '♦';
+      if (num <= 39) s = '♥';
+      if (num <= 52) s = '♣';
+      return s += this.cardArr[((num - 1) % 13)];
     },
     cardConverter: function(arr) {
       let winnerMade = '';
