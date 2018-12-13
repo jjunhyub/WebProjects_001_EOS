@@ -47,11 +47,14 @@ export default {
         let game_time = moment.utc(this.games[0].created_at).valueOf();
         this.differentTime = 1800 - Math.floor((current_time - game_time) / 1000);
         this.prize = this.games[0].prize;
-        var duration = moment.duration(this.differentTime*1000, 'milliseconds');
+        var duration = moment.duration(this.differentTime * 1000, 'milliseconds');
         var interval = 1000;
         setInterval(function() {
           duration = moment.duration(duration - interval, 'milliseconds');
-          vueCompo.leftTime = duration.minutes().toString() + ":" + duration.seconds().toString();
+          let second = duration.seconds().toString();
+          if (duration.seconds() < 10) second = '0' + second;
+          //if (duration.seconds() < 0) {vueCompo.getGameLogs();}
+          vueCompo.leftTime = duration.minutes().toString() + ":" + second;
         }, interval);
       }).catch(error => {
         console.log('getGameError : ');

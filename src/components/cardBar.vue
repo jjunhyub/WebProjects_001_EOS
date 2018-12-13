@@ -1,21 +1,23 @@
 <template>
 <div class="card-bar">
-  <div class="card">
-    <div class="card-img" style="padding : 20px; padding-bottom : 0px; padding-top : 50px">
-      <img class="cardImg" id="card1" v-bind:src=card1 />
-      <img class="cardImg" id="card2" v-bind:src=card2 />
-      <img class="cardImg" id="card3" v-bind:src=card3 />
-      <img class="cardImg" id="card4" v-bind:src=card4 />
-      <img class="cardImg" id="card5" v-bind:src=card5 />
-    </div>
-    <div>
-      <h4 class="shadow-typo">{{cardName}}</h4>
-    </div>
-    <div style="padding : 30px; padding-top: 0px">
-      <button type="button" class="btn" id="disabled" disabled>POINT : {{point}}</button>
-      <button type="button" class="btn" v-on:click="draw">DRAW</button>
-    </div>
+  <div class="card-img" style="padding : 20px; padding-bottom : 0px; padding-top : 40px">
+    <img class="cardImg" id="card1" v-bind:src=card1 />
+    <img class="cardImg" id="card2" v-bind:src=card2 />
+    <img class="cardImg" id="card3" v-bind:src=card3 />
+    <img class="cardImg" id="card4" v-bind:src=card4 />
+    <img class="cardImg" id="card5" v-bind:src=card5 />
   </div>
+  <div>
+    <h4 class="shadow-typo">{{cardName}}</h4>
+  </div>
+  <div style="padding : 30px; padding-top: 0px">
+    <button type="button" class="btn" id="disabled" disabled>POINT : {{point}}</button>
+    <button type="button" class="btn" v-on:click="draw">DRAW</button>
+  </div>
+  <el-dialog title="Warning" :visible.sync="dialogVisible" width="30%" center>
+    <span>Please check your CPUs</span>
+  </el-dialog>
+
 </div>
 </template>
 
@@ -117,13 +119,12 @@ function login() {
     scatter.getIdentity(requiredFields).then(() => {
       // Always use the accounts you got back from Scatter.
       // Never hardcode them even if you are prompting
-      console.log('before account');
       // the user for their account name beforehand. They could still give you a different account.
       account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
       vueCompo.$http.post('/api/login', {
         key_account: account.name,
       }).then(response => {
-        vueCompo.point = response.data.point;
+        vueCompo.point = Math.floor(response.data.point*1000)/1000;
       });
 
       vueCompo.$http.post('/api/getEntry', {
@@ -163,7 +164,6 @@ function login() {
     console.log(error);
   });
 };
-
 login();
 
 export default {
@@ -177,6 +177,7 @@ export default {
       card3: "/cards/54.png",
       card4: "/cards/54.png",
       card5: "/cards/54.png",
+      dialogVisible: false,
     };
   },
   methods: {
@@ -215,7 +216,8 @@ export default {
           getCard(res.rows[0].myhand);
         });
       }).catch(error => {
-        //game refused
+        console.log('please check here 1');
+        vueCompo.dialogVisible = true;
       });
     },
   },
@@ -228,11 +230,12 @@ export default {
 <style scoped>
 .card-bar {
   text-align: center;
-  color: black;
-  background-color: black;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .btn {
+  margin: 0 20px;
   padding: 15px 50px;
   border: 2px solid #f7f7f7;
   text-transform: uppercase;
@@ -241,7 +244,9 @@ export default {
   transition: .3s;
   background-color: #00b3b4;
   color: white;
-  font-size: 1rem;
+  font-size: smaller;
+  width: 20%;
+  height: auto;
 }
 
 .btn:hover {
@@ -250,12 +255,11 @@ export default {
 
 #disabled {
   opacity: 1;
-  margin-right: 100px;
 }
 
 .cardImg {
-  width: 130px;
-  height: 200px;
+  width: 14%;
+  height: 80%;
   margin: 0 5px;
 }
 
