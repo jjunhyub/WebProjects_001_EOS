@@ -7,12 +7,11 @@
   <el-button type="text" @click="dialogVisible_1 = true" class="navnav">Info</el-button>
   <el-dialog title="Info" :visible.sync="dialogVisible_1" center>
     <div>1. We are displaying points upto three decimal point.</div>
-    <div>2. Spade_Ace is 1, club_King is 52.</div>
   </el-dialog>
   <el-button type="text" @click="dialogVisible_2 = true" class="navnav">How to Play</el-button>
   <el-dialog title="How to Play" :visible.sync="dialogVisible_2" center>
-    <div>1. We are following the house rules.</div>
-    <div>2. spade>diamond>heart>club.</div>
+    <div>1. Hand-ranking : Straight flush > Four of a kind > Full house > Flush > Straight > Three of a kind > Two pair > One pair > High card</div>
+    <div>2. Suit Order : ♠ > ♦ > ♥ > ♣</div>
   </el-dialog>
   <el-button type="text" @click="dialogVisible_3 = true" class="navnav">License</el-button>
   <el-dialog title="License" :visible.sync="dialogVisible_3" center>
@@ -135,9 +134,6 @@
       SOFTWARE.
     </div>
   </el-dialog>
-  <div>
-
-  </div>
 </nav>
 </template>
 
@@ -167,24 +163,9 @@ export default {
   color: white;
 }
 
-.el-dialog {
-  border-radius: 5px;
-  color: rgba(255, 255, 255, 0.5) !important;
-}
-
 .navbar navbar-expand-lg navbar-dark bg-dark {
   width: 100%;
   position: fixed;
   background-color: #00b3b4 !important;
-}
-
-.nav-link {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 </style>

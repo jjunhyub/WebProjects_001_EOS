@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     cardMaker: function(num) {
-      let s;
+      let s='';
       if (num <= 13) s = '♠';
       if (num <= 26) s = '♦';
       if (num <= 39) s = '♥';
@@ -41,7 +41,7 @@ export default {
       return s += this.cardArr[((num - 1) % 13)];
     },
     cardConverter: function(arr) {
-      let winnerMade = '';
+      let winnerMade='';
       for (let i = 0; i < 5; i++) winnerMade += this.cardMaker(arr[i]);
       return winnerMade;
     },
@@ -51,8 +51,4 @@ export default {
 </script>
 
 <style scoped>
-.license {
-  text-align: center;
-  font-size: 10px;
-}
 </style>

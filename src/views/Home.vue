@@ -1,5 +1,4 @@
 <template>
-<!--이곳은 실제로 페이지가 다른 view들을 저장한다. vue라고 다 똑같은 컴포넌트인것이 아니다.-->
 <div class="home">
   <eos-bar></eos-bar>
   <card-bar></card-bar>
@@ -46,18 +45,17 @@ export default {
         let current_time = moment.utc().valueOf();
         let game_time = moment.utc(this.games[0].created_at).valueOf();
         this.differentTime = 1800 - Math.floor((current_time - game_time) / 1000);
-        this.prize = this.games[0].prize;
+        this.prize = Math.floor(this.games[0].prize * 1000) / 1000;
         var duration = moment.duration(this.differentTime * 1000, 'milliseconds');
         var interval = 1000;
         setInterval(function() {
           duration = moment.duration(duration - interval, 'milliseconds');
           let second = duration.seconds().toString();
-          if (duration.seconds() < 10) second = '0' + second;
-          //if (duration.seconds() < 0) {vueCompo.getGameLogs();}
+          if (duration.seconds() < 10 && duration.seconds() >= 0) second = '0' + second;
           vueCompo.leftTime = duration.minutes().toString() + ":" + second;
+          if (duration.seconds() === 0 && duration.minutes() === 0)duration._milliseconds += 1800000;
         }, interval);
       }).catch(error => {
-        console.log('getGameError : ');
         console.error(error);
       });
     },

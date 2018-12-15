@@ -7,17 +7,17 @@
     <img class="cardImg" id="card4" v-bind:src=card4 />
     <img class="cardImg" id="card5" v-bind:src=card5 />
   </div>
-  <div>
-    <h4 class="shadow-typo">{{cardName}}</h4>
-  </div>
+  <h4 class="shadow-typo">{{cardName}}</h4>
   <div style="padding : 30px; padding-top: 0px">
     <button type="button" class="btn" id="disabled" disabled>POINT : {{point}}</button>
     <button type="button" class="btn" v-on:click="draw">DRAW</button>
   </div>
-  <el-dialog title="Warning" :visible.sync="dialogVisible" width="30%" center>
-    <span>Please check your CPUs</span>
+  <el-dialog title="Warning" :visible.sync="dialogVisible_1" width="30%" center>
+    <span>Please check your CPUs and try again</span>
   </el-dialog>
-
+  <el-dialog title="Warning" :visible.sync="dialogVisible_2" width="30%" center>
+    <span>Please check your Scatter connection and try again</span>
+  </el-dialog>
 </div>
 </template>
 
@@ -114,12 +114,7 @@ function login() {
     const {
       scatter
     } = ScatterJS;
-    // Now we need to get an identity from the user.
-    // We're also going to require an account that is connected to the network we're using.
     scatter.getIdentity(requiredFields).then(() => {
-      // Always use the accounts you got back from Scatter.
-      // Never hardcode them even if you are prompting
-      // the user for their account name beforehand. They could still give you a different account.
       account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
       vueCompo.$http.post('/api/login', {
         key_account: account.name,
@@ -134,14 +129,14 @@ function login() {
         .then(response => {
           if (response.data.result) {
             let made = JSON.parse(JSON.parse(response.data.made));
-            if (response.data.made_id <= 1302540) vueCompo.cardName = "TOP CARD";
+            if (response.data.made_id <= 1302540) vueCompo.cardName = "HIGH CARD";
             else if (response.data.made_id <= 2400780) vueCompo.cardName = "ONE PAIR";
             else if (response.data.made_id <= 2524332) vueCompo.cardName = "TWO PAIR";
-            else if (response.data.made_id <= 2579244) vueCompo.cardName = "TRIPLE";
+            else if (response.data.made_id <= 2579244) vueCompo.cardName = "THREE OF A KIND";
             else if (response.data.made_id <= 2589444) vueCompo.cardName = "STRAIGHT";
             else if (response.data.made_id <= 2594552) vueCompo.cardName = "FLUSH";
             else if (response.data.made_id <= 2598296) vueCompo.cardName = "FULL HOUSE";
-            else if (response.data.made_id <= 2598920) vueCompo.cardName = "FOUR CARD";
+            else if (response.data.made_id <= 2598920) vueCompo.cardName = "FOUR OF A KIND";
             else if (response.data.made_id <= 2598956) vueCompo.cardName = "STRAIGHT FLUSH";
             else if (response.data.made_id <= 2598960) vueCompo.cardName = "ROYAL STRAIGHT FLUSH";
 
@@ -152,16 +147,14 @@ function login() {
             vueCompo.card5 = "/cards/" + made[4].toString() + ".png";
           }
         });
-      // You can pass in any additional options you want into the eosjs reference.
       const eosOptions = {
         expireInSeconds: 60,
       };
-
-      // Get a proxy reference to eosjs which you can use to sign transactions with a user's Scatter.
       eos = scatter.eos(network, Eos, eosOptions);
     });
   }).catch(error => {
     console.log(error);
+      vueCompo.dialogVisible_2 = true;
   });
 };
 login();
@@ -177,7 +170,8 @@ export default {
       card3: "/cards/54.png",
       card4: "/cards/54.png",
       card5: "/cards/54.png",
-      dialogVisible: false,
+      dialogVisible_1: false,
+      dialogVisible_2: false,
     };
   },
   methods: {
@@ -195,29 +189,27 @@ export default {
           }]
         }]
       }).then(function(trx) {
-        //console.log(`transaction : ${trx.transaction_id}`);
         eos.getTableRows({
           code: 'jmvzpmtc3tum',
           scope: 'jmvzpmtc3tum',
           table: 'persons',
-          lower_bound: account.name, //=table_key
+          lower_bound: account.name,
           json: true,
         }).then(function(res) {
-          if (res.rows[0].myhand <= 1302540) vueCompo.cardName = "TOP CARD";
+          if (res.rows[0].myhand <= 1302540) vueCompo.cardName = "HIGH CARD";
           else if (res.rows[0].myhand <= 2400780) vueCompo.cardName = "ONE PAIR";
           else if (res.rows[0].myhand <= 2524332) vueCompo.cardName = "TWO PAIR";
-          else if (res.rows[0].myhand <= 2579244) vueCompo.cardName = "TRIPLE";
+          else if (res.rows[0].myhand <= 2579244) vueCompo.cardName = "THREE OF A KIND";
           else if (res.rows[0].myhand <= 2589444) vueCompo.cardName = "STRAIGHT";
           else if (res.rows[0].myhand <= 2594552) vueCompo.cardName = "FLUSH";
           else if (res.rows[0].myhand <= 2598296) vueCompo.cardName = "FULL HOUSE";
-          else if (res.rows[0].myhand <= 2598920) vueCompo.cardName = "FOUR CARD";
+          else if (res.rows[0].myhand <= 2598920) vueCompo.cardName = "FOUR OF A KIND";
           else if (res.rows[0].myhand <= 2598956) vueCompo.cardName = "STRAIGHT FLUSH";
           else if (res.rows[0].myhand <= 2598960) vueCompo.cardName = "ROYAL STRAIGHT FLUSH";
           getCard(res.rows[0].myhand);
         });
       }).catch(error => {
-        console.log('please check here 1');
-        vueCompo.dialogVisible = true;
+        vueCompo.dialogVisible_1 = true;
       });
     },
   },
