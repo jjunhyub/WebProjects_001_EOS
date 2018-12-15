@@ -35,9 +35,9 @@ export default {
     cardMaker: function(num) {
       let s='';
       if (num <= 13) s = '♠';
-      if (num <= 26) s = '♦';
-      if (num <= 39) s = '♥';
-      if (num <= 52) s = '♣';
+      else if (num <= 26) s = '♦';
+      else if (num <= 39) s = '♥';
+      else if (num <= 52) s = '♣';
       return s += this.cardArr[((num - 1) % 13)];
     },
     cardConverter: function(arr) {
