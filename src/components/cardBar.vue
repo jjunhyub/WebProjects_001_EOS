@@ -66,9 +66,8 @@ function getCard(made) {
       }).then(response => {
         vueCompo.point = Math.floor(response.data.point * 1000) / 1000;
       });
-      console.log(vueCompo.$parent);
       vueCompo.$http.get('/api/getGameLogs').then(response => {
-        vueCompo.games = response.data;
+        vueCompo.$parent.games = response.data;
       }).then(() => {
         let current_time = moment.utc().valueOf();
         let game_time = moment.utc(vueCompo.games[0].created_at).valueOf();
@@ -185,7 +184,6 @@ export default {
 
   data() {
     return {
-      games: [],
       point: 0,
       cardName: "",
       card1: "/cards/54.png",
