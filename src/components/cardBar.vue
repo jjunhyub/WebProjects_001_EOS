@@ -26,6 +26,8 @@ import ScatterJS from 'scatterjs-core';
 import ScatterEOS from 'scatterjs-plugin-eosjs';
 import Eos from 'eosjs';
 
+var moment = require('moment');
+moment().format();
 ScatterJS.plugins(new ScatterEOS());
 
 let eos;
@@ -62,7 +64,27 @@ function getCard(made) {
       vueCompo.$http.post('/api/login', {
         key_account: account.name,
       }).then(response => {
-        vueCompo.point = response.data.point;
+        vueCompo.point = Math.floor(response.data.point * 1000) / 1000;
+      });
+      console.log(vueCompo.$parent);
+      vueCompo.$http.get('/api/getGameLogs').then(response => {
+        vueCompo.games = response.data;
+      }).then(() => {
+        let current_time = moment.utc().valueOf();
+        let game_time = moment.utc(vueCompo.games[0].created_at).valueOf();
+        vueCompo.$parent.differentTime = 1800 - Math.floor((current_time - game_time) / 1000);
+        vueCompo.$parent.prize = Math.floor(vueCompo.games[0].prize * 1000) / 1000;
+        var duration = moment.duration(vueCompo.$parent.differentTime * 1000, 'milliseconds');
+        var interval = 1000;
+        setInterval(function() {
+          duration = moment.duration(duration - interval, 'milliseconds');
+          let second = duration.seconds().toString();
+          if (duration.seconds() < 10 && duration.seconds() >= 0) second = '0' + second;
+          vueCompo.$parent.leftTime = duration.minutes().toString() + ":" + second;
+          if (duration.seconds() === 0 && duration.minutes() === 0) duration._milliseconds += 1800000;
+        }, interval);
+      }).catch(error => {
+        console.error(error);
       });
 
       var c1 = document.getElementById('card1');
@@ -119,7 +141,7 @@ function login() {
       vueCompo.$http.post('/api/login', {
         key_account: account.name,
       }).then(response => {
-        vueCompo.point = Math.floor(response.data.point*1000)/1000;
+        vueCompo.point = Math.floor(response.data.point * 1000) / 1000;
       });
 
       vueCompo.$http.post('/api/getEntry', {
@@ -154,7 +176,7 @@ function login() {
     });
   }).catch(error => {
     console.log(error);
-      vueCompo.dialogVisible_2 = true;
+    vueCompo.dialogVisible_2 = true;
   });
 };
 login();
@@ -163,6 +185,7 @@ export default {
 
   data() {
     return {
+      games: [],
       point: 0,
       cardName: "",
       card1: "/cards/54.png",
@@ -196,6 +219,7 @@ export default {
           lower_bound: account.name,
           json: true,
         }).then(function(res) {
+          //여기서 받고 바로 보여주면 카드가 돌기도전에 무슨 패가 나왔는지 알 수 있다.
           if (res.rows[0].myhand <= 1302540) vueCompo.cardName = "HIGH CARD";
           else if (res.rows[0].myhand <= 2400780) vueCompo.cardName = "ONE PAIR";
           else if (res.rows[0].myhand <= 2524332) vueCompo.cardName = "TWO PAIR";
